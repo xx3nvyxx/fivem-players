@@ -253,7 +253,13 @@ UpdateStream(ActiveList, RowNumber, *)
 	if SubStr(ActiveRowStream, 1, 3) == "🔴 "
 		 ActiveRowStream := SubStr(ActiveRowStream, 4)
 	prefill := ActiveRowStream ? ActiveRowStream : ActiveRowName
-	NewStream := InputBox("Enter a new Stream id for " . ActiveRowName, "Stream Name",, prefill)
+	x := 0
+	y := 0
+	MainGui.GetPos(&x, &y)
+	x += 200
+	y += 250
+	MainGui.Opt("+OwnDialogs")
+	NewStream := InputBox("Enter a new Stream id for " . ActiveRowName, "Stream Name", "X" . x . " Y" . y , prefill)
 	if NewStream.Result = "Cancel"
 		Return
 	Stream[ActiveRowName] := NewStream.Value = ActiveRowName ? "*" : NewStream.Value
@@ -284,7 +290,13 @@ UpdateCharacter(ActiveList, RowNumber, *)
 	ActiveRowName := ActiveList.GetText(RowNumber, 2)
 	ActiveRowCharacter := ActiveList.GetText(RowNumber, 4)
 	prefill := ActiveRowCharacter ? ActiveRowCharacter : ""
-	NewCharacter := InputBox("Enter a new main character for " . ActiveRowName, "Character Name",, prefill)
+	x := 0
+	y := 0
+	MainGui.GetPos(&x, &y)
+	x += 200
+	y += 250
+	MainGui.Opt("+OwnDialogs")
+	NewCharacter := InputBox("Enter a new main character for " . ActiveRowName, "Character Name", "X" . x . " Y" . y , prefill)
 	if NewCharacter.Result = "Cancel"
 		Return
 	Characters[ActiveRowName] := NewCharacter.Value
