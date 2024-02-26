@@ -16,14 +16,18 @@ GuiFavorites.ModifyCol(1, "Integer")
 GuiFavorites.OnEvent("DoubleClick", UpdateStream)
 GuiFavorites.OnEvent("ContextMenu", ActiveList_ContextMenu)
 
+GuiClear := MainGui.Add("Button", "x10 y210", "🗙")
+GuiClear.OnEvent("Click", DataClear)
+
+GuiPlayerCount := MainGui.Add("Text", "x40 y215 w30", "0")
+
 GuiUp := MainGui.Add("Button", "x380 y210", "↑")
 GuiUp.OnEvent("Click", AddFavorite)
-
 
 GuiDown := MainGui.Add("Button", "x400 y210", "↓")
 GuiDown.OnEvent("Click", RemoveFavorite)
 
-GuiRefresh := MainGui.Add("Button", "x780 y210", "🗘")
+GuiRefresh := MainGui.Add("Button", "x785 y210", "🗘")
 GuiRefresh.OnEvent("Click", DataRefresh)
 
 GuiPlayers := MainGui.Add("ListView", "Sort x10 r20 w800", ["id", "name", "stream", "main character(s)", "discord", "steam"])
@@ -52,7 +56,7 @@ Return
 
 DataRefresh(*)
 {
-	GuiRefresh.Opt("+Disabled")
+	MainGui.Opt("+Disabled")
 	whr := ComObject("WinHttp.WinHttpRequest.5.1")
 	i := random(1, IPs.Length)
 	whr.Open("GET", "http://" . IPs[i] . ":30120/players.json", true)
@@ -66,12 +70,12 @@ DataRefresh(*)
 	catch
 	{
 		Error := "response timeout"
-		GuiRefresh.Opt("-Disabled")
+		MainGui.Opt("-Disabled")
 		Return
 	}
 	if StrLen(response) < 10
 	{
-		GuiRefresh.Opt("-Disabled")
+		MainGui.Opt("-Disabled")
 		return
 	}
 	CurrentIDs := Array()
@@ -193,7 +197,8 @@ DataRefresh(*)
 			}
 		}
 	}
-	GuiRefresh.Opt("-Disabled")
+	GuiPlayerCount.Text := GuiFavorites.GetCount() + GuiPlayers.GetCount()
+	MainGui.Opt("-Disabled")
 }
 
 AddFavorite(*)
@@ -348,8 +353,15 @@ HasVal(haystack, needle)
 	return 0
 }
 
+DataClear(*)
+{
+	ClearList(GuiFavorites)
+	ClearList(GuiPlayers)
+}
+
 ClearList(ListToClear)
 {
+
     Loop ListToClear.GetCount()
     {
         ListToClear.Delete(1)
